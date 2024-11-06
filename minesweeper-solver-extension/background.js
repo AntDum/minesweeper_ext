@@ -4,13 +4,16 @@ import { Solver } from './game/solver.js';
 
 // // Import each parser statically
 import * as parserDefault from './parsers/parser_default.js';
-import * as parserMinesweeperOnline from './parsers/parser_minesweeperonline.js';
+import * as parserMinesweeperOnlineCom from './parsers/parser_minesweeperonline_com.js';
+import * as parserMinesweeperOnline from './parsers/parser_minesweeper_online.js';
 
 // Map the hostname to the correct parser
 function getParserForSite(hostname) {
     switch (hostname) {
         case 'minesweeperonline.com':
-            return parserMinesweeperOnline;
+            return parserMinesweeperOnlineCom;
+        case 'minesweeper.online':
+            return parserMinesweeperOnline
         default:
             return parserDefault;
     }

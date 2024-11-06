@@ -4,7 +4,7 @@
     "version": "1.0",
     "description": "An extension to parse and solve Minesweeper games.",
     "permissions": ["scripting", "activeTab"],
-    "host_permissions": ["*://minesweeperonline.com/*"],
+    "host_permissions": ["*://minesweeperonline.com/*", "*://minesweeper.online/*"],
     "background": {
       "service_worker": "background.js",
       "type": "module"

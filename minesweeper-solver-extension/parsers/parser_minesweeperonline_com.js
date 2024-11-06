@@ -1,4 +1,4 @@
-// parsers/parser_minesweeperonline.js
+// Parser for minesweeperonline.com
 
 export function parseGameBoard() {
     console.log("Parsing board");
@@ -24,9 +24,10 @@ export function parseGameBoard() {
             state = "flag";
         } else {
             // Check if it has an "openX" class (indicating a number 0-8)
-            const openClass = Array.from(cell.classList).find(c => c.startsWith('open'));
+            const key = 'open';
+            const openClass = Array.from(cell.classList).find(c => c.startsWith(key));
             if (openClass) {
-                const number = parseInt(openClass.slice(4), 10); // Extract number from "openX"
+                const number = parseInt(openClass.slice(key.length), 10); // Extract number from "openX"
                 state = `open${number}`;
             }
         }
