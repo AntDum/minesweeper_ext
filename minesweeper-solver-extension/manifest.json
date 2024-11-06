@@ -3,14 +3,43 @@
     "name": "Minesweeper Solver",
     "version": "1.0",
     "description": "An extension to parse and solve Minesweeper games.",
-    "permissions": ["scripting", "activeTab"],
-    "host_permissions": ["*://minesweeperonline.com/*", "*://minesweeper.online/*"],
+    "permissions": [
+        "scripting",
+        "activeTab"
+    ],
+    "host_permissions": [
+        "*://minesweeperonline.com/*",
+        "*://minesweeper.online/*"
+    ],
     "background": {
-      "service_worker": "background.js",
-      "type": "module"
+        "service_worker": "background.js",
+        "type": "module"
     },
     "action": {
-      "default_popup": "popup.html"
-    }
-  }
-  
+        "default_popup": "popup.html"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "*://minesweeper.online/*"
+            ],
+            "css": [
+                "contents/styles.css"
+            ],
+            "js": [
+                "contents/content_script_minesweeper_online.js"
+            ]
+        },
+        {
+            "matches": [
+                "*://minesweeperonline.com/*"
+            ],
+            "css": [
+                "contents/styles.css"
+            ],
+            "js": [
+                "contents/content_script_minesweeperonline_com.js"
+            ]
+        }
+    ]
+}

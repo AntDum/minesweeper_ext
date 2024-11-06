@@ -11,13 +11,14 @@ import * as parserMinesweeperOnline from './parsers/parser_minesweeper_online.js
 function getParserForSite(hostname) {
     switch (hostname) {
         case 'minesweeperonline.com':
-            return parserMinesweeperOnlineCom;
+            return {parser: parserMinesweeperOnlineCom, content: 'contents/content_script_minesweeperonline_com.js'};
         case 'minesweeper.online':
-            return parserMinesweeperOnline
+            return {parser: parserMinesweeperOnline, content: 'contents/content_script_minesweeper_online.js'};
         default:
-            return parserDefault;
+            return {parser: parserDefault};
     }
 }
+
 
 let gameState = null;
 
@@ -31,27 +32,50 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
             if (!tabs[0]) return;
             const url = new URL(tabs[0].url);
+            const tabId = tabs[0].id;
 
             if (!url) return;
-            const parser = getParserForSite(url.hostname);
+            const {parser, content} = getParserForSite(url.hostname);
+
+            console.log("content:", content);
 
             // Execute the parser script in the active tab
             chrome.scripting.executeScript({
-                target: { tabId: tabs[0].id },
+                target: { tabId: tabId },
                 func: parser.parseGameBoard,
             }).then((results) => {
                 console.log("Script run !", results);
                 gameState = new GameState(results[0].result);
                 let solution;
+
                 if (message.full === false) {
                     solution = gameState.findCellsToFlagAndOpen();
                 } else {
                     const solver = new Solver(gameState);
                     solution = solver.recommend();
                 }
-                chrome.runtime.sendMessage({ type: 'SOLUTION_RESULT', 
-                    data: solution, 
-                    board: gameState  });
+                chrome.runtime.sendMessage({
+                    type: 'SOLUTION_RESULT',
+                    data: solution,
+                    board: gameState
+                });
+
+                chrome.scripting.executeScript({
+                    target: { tabId: tabId },
+                    files: ['contents/styles.css', content]
+                }).then(() => {
+                    // Once content_renderer.js is loaded, send the data to render
+                    chrome.tabs.sendMessage(tabId, {
+                        type: 'UPDATE_VISUALS',
+                        data: solution
+                    });
+                }).catch((error) => {
+                    console.error("Failed to inject script:", error);
+                });
+                // chrome.tabs.sendMessage(tabs[0].id, { 
+                //     type: 'UPDATE_VISUALS',
+                //     data: solution 
+                // });
             });
         });
     }

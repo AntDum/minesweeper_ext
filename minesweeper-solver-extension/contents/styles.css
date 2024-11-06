@@ -1,0 +1,11 @@
+.flagged-cell {
+    background-image: none !important;
+    background-color: red !important;
+    color: red;
+}
+
+.openable-cell {
+    background-image: none !important;
+    background-color: green !important;
+    color: green;
+}
