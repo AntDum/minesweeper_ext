@@ -54,12 +54,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                     const solver = new Solver(gameState);
                     solution = solver.recommend();
                 }
-                chrome.runtime.sendMessage({
-                    type: 'SOLUTION_RESULT',
-                    data: solution,
-                    board: gameState
-                });
-
+                
                 chrome.scripting.executeScript({
                     target: { tabId: tabId },
                     files: ['contents/styles.css', content]
@@ -72,10 +67,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                 }).catch((error) => {
                     console.error("Failed to inject script:", error);
                 });
-                // chrome.tabs.sendMessage(tabs[0].id, { 
-                //     type: 'UPDATE_VISUALS',
-                //     data: solution 
-                // });
             });
         });
     }
