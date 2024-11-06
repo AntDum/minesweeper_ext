@@ -56,8 +56,8 @@ function renderSolution(data, board) {
                 cellElement.innerText = '⬜';  // Openable cell icon
                 cellElement.classList.add('open-cell');
             } else if (cell.isOpen) {
-                cellElement.innerText = cell.bombCount > 0 ? cell.bombCount : ' ';
-                cellElement.classList.add(`bomb-count-${cell.bombCount}`); // Different style per bomb count
+                cellElement.innerText = cell.numberOfBomb > 0 ? cell.numberOfBomb : ' ';
+                cellElement.classList.add(`bomb-count-${cell.numberOfBomb}`); // Different style per bomb count
             } else {
                 cellElement.innerText = ' ';
                 cellElement.classList.add('unknown-cell');
