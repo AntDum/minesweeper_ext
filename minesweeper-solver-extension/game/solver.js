@@ -1,5 +1,5 @@
 class Solver {
-    constructor(gameState, simulations = 100) {
+    constructor(gameState, simulations = 1) {
         this.gameState = gameState;
         this.simulations = simulations;
         this.simulations_tries = 10;
