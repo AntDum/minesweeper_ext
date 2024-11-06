@@ -29,14 +29,16 @@ function renderSolution(data, board) {
     // Find the board dimensions
     const maxX = board.width;
     const maxY = board.height;
+    const minX = board.startX;
+    const minY = board.startY;
 
     // Create a table element
     const table = document.createElement('table');
     table.classList.add('solution-table');
 
-    for (let y = 1; y <= maxY; y++) {
+    for (let y = minY; y <= maxY; y++) {
         const row = document.createElement('tr');
-        for (let x = 1; x <= maxX; x++) {
+        for (let x = minX; x <= maxX; x++) {
             const cellElement = document.createElement('td');
             cellElement.classList.add('solution-cell');
 

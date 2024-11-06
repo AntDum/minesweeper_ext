@@ -33,11 +33,15 @@ class GameState {
     buildCellMap() {
         this.height = 0;
         this.width = 0;
+        this.startX = Infinity;
+        this.startY = Infinity;
         const map = new Map();
         for (let cell of this.cells) {
             map.set(`${cell.x}_${cell.y}`, cell);
             this.height = Math.max(cell.y, this.height);
             this.width = Math.max(cell.x, this.width);
+            this.startX = Math.min(cell.x, this.startX);
+            this.startY = Math.min(cell.y, this.startY);
         }
         return map;
     }
