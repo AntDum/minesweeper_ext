@@ -18,11 +18,11 @@ export function parseGameBoard() {
 
         // Determine the cell's state based on its class
         let state;
-        if (cell.classList.contains('hd_closed')) {
-            state = "blank";
-        } else if (cell.classList.contains('hd_flag')) {
+        if (cell.classList.contains('hd_flag')) {
             state = "flag";
-        } else {
+        } else if (cell.classList.contains('hd_closed')) {
+            state = "blank";
+        } else if (cell.classList.contains('hd_opened')) {
             // Check if it has an "openX" class (indicating a number 0-8)
             const key = 'hd_type';
             const openClass = Array.from(cell.classList).find(c => c.startsWith(key));
