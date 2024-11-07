@@ -11,16 +11,43 @@ import * as parserMinesweeperOnline from './parsers/parser_minesweeper_online.js
 function getParserForSite(hostname) {
     switch (hostname) {
         case 'minesweeperonline.com':
-            return {parser: parserMinesweeperOnlineCom, content: 'contents/content_script_minesweeperonline_com.js'};
+            return { parser: parserMinesweeperOnlineCom, content: 'contents/content_script_minesweeperonline_com.js' };
         case 'minesweeper.online':
-            return {parser: parserMinesweeperOnline, content: 'contents/content_script_minesweeper_online.js'};
+            return { parser: parserMinesweeperOnline, content: 'contents/content_script_minesweeper_online.js' };
         default:
-            return {parser: parserDefault};
+            return { parser: parserDefault };
     }
 }
 
 
 let gameState = null;
+
+chrome.runtime.onInstalled.addListener(() => {
+    chrome.storage.local.set({ runOnClick: false });
+});
+
+chrome.storage.onChanged.addListener((changes, namespace) => {
+    if (changes.runOnClick) {
+        toggleClickListener(changes.runOnClick.newValue);
+    }
+});
+
+
+// Function to toggle the click listener based on the checkbox state
+function toggleClickListener(enable) {
+    console.log("Toggle", enable);
+    if (enable) {
+        chrome.webNavigation.onCompleted.addListener((details) => {
+            console.log("Here", details);
+            chrome.scripting.executeScript({
+                target: { tabId: details.tabId },
+                files: ['click_listener.js'],
+            });
+        });
+    } else {
+        chrome.webNavigation.onCompleted.removeListener();
+    }
+}
 
 
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
@@ -35,7 +62,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             const tabId = tabs[0].id;
 
             if (!url) return;
-            const {parser, content} = getParserForSite(url.hostname);
+            const { parser, content } = getParserForSite(url.hostname);
 
             console.log("content:", content);
 
@@ -48,25 +75,25 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                 gameState = new GameState(results[0].result);
                 let solution;
 
-                if (message.full === false) {
-                    solution = gameState.findCellsToFlagAndOpen();
-                } else {
-                    const solver = new Solver(gameState);
-                    solution = solver.recommend();
-                }
-                
+                const solver = new Solver(gameState);
+                solution = solver.recommend();
+
+                // console.log(isInjected);
+
                 chrome.scripting.executeScript({
                     target: { tabId: tabId },
-                    files: ['contents/styles.css', content]
+                    files: [content]
                 }).then(() => {
                     // Once content_renderer.js is loaded, send the data to render
                     chrome.tabs.sendMessage(tabId, {
                         type: 'UPDATE_VISUALS',
                         data: solution
                     });
+                    // isInjected = true;
                 }).catch((error) => {
                     console.error("Failed to inject script:", error);
                 });
+
             });
         });
     }

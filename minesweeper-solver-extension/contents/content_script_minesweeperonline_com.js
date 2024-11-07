@@ -1,4 +1,4 @@
-chrome.runtime.onMessage.addListener((message) => {
+function handleMessage(message) {
     if (message.type === 'UPDATE_VISUALS') {
         const { cellsToFlag, cellsToOpen } = message.data;
 
@@ -17,4 +17,6 @@ chrome.runtime.onMessage.addListener((message) => {
             }
         });
     }
-});
+}
+
+chrome.runtime.onMessage.addListener(handleMessage);

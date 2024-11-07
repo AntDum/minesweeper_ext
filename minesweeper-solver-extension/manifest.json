@@ -5,7 +5,10 @@
     "description": "An extension to parse and solve Minesweeper games.",
     "permissions": [
         "scripting",
-        "activeTab"
+        "activeTab",
+        "storage",
+        "webNavigation",
+        "tabs"
     ],
     "host_permissions": [
         "*://minesweeperonline.com/*",

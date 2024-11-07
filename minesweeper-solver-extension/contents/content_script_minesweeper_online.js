@@ -1,9 +1,8 @@
-
-chrome.runtime.onMessage.addListener((message) => {
+function handleMessage(message) {
     console.log("Message on tab");
     if (message.type === 'UPDATE_VISUALS') {
         const { cellsToFlag, cellsToOpen } = message.data;
-
+        
         // Apply classes specifically for minesweeperonline.com
         cellsToFlag.forEach(cell => {
             const cellElement = document.getElementById(`cell_${cell.x}_${cell.y}`);
@@ -11,7 +10,7 @@ chrome.runtime.onMessage.addListener((message) => {
                 cellElement.classList.add('flagged-cell');
             }
         });
-
+        
         cellsToOpen.forEach(cell => {
             const cellElement = document.getElementById(`cell_${cell.x}_${cell.y}`);
             if (cellElement) {
@@ -19,4 +18,7 @@ chrome.runtime.onMessage.addListener((message) => {
             }
         });
     }
-});
+}
+
+chrome.runtime.onMessage.addListener(handleMessage);
+    
